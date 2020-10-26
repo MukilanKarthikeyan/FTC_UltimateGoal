@@ -71,9 +71,6 @@ public class DriverControl extends LinearOpMode {
 
         while(!isStopRequested()){
 
-            conPow = -gamepad1.left_stick_y;
-            conveyM.setPower(conPow);
-
             //flywheel toggler: pressing "a" turns on the flywheel, pressing "a" again turns it off
             // NOTE: tried creating a separate method but does not work as intended
 
