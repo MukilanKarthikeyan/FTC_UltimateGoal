@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class TRDrive {
@@ -73,6 +77,8 @@ public class TRDrive {
         right_BackM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left_BackM.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        setUpIMU();
+
     }
 
     /**
@@ -89,12 +95,80 @@ public class TRDrive {
         while((Math.abs(right_BackM.getCurrentPosition())-Math.abs(right_target) > 10) &&
                 (Math.abs(left_BackM.getCurrentPosition())-Math.abs(left_target) > 10) &&
                     !opmode.isStopRequested()){
+
             right_FrontM.setPower(power);
             right_BackM.setPower(power);
             left_FrontM.setPower(power);
             left_BackM.setPower(power);
         }
     }
-    public void turn(double angle, double power){}
+    public void turn_relative_robot(double turn_angle, double power){
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double current_angle = angles.firstAngle;
 
+        //adds the turning degrees to the robot angle so that the turn starts form where the robot is facing
+        double target_angle = current_angle + turn_angle;
+
+
+        boolean clockwise = true;
+        if(turn_angle > 0){
+            right_power = power;
+            left_power = -power;
+            clockwise = true;
+        }
+        else{
+            right_power = -power;
+            left_power = power;
+            clockwise = false;
+        }
+
+        while(Math.abs(target_angle) - Math.abs(current_angle) > 5 && !opmode.isStopRequested()){
+            right_FrontM.setPower(right_power);
+            right_BackM.setPower(right_power);
+            left_FrontM.setPower(left_power);
+            left_BackM.setPower(left_power);
+        }
+
+
+    }
+    public void turn_relative_field(double target_angle, double power){
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double current_angle = angles.firstAngle % 360;
+        boolean clockwise = true;
+        //if clockwise else counter clockwise
+        if(current_angle > target_angle){
+            right_power = power;
+            left_power = -power;
+            clockwise = true;
+        }
+        else{
+            right_power = -power;
+            left_power = power;
+            clockwise = false;
+        }
+
+        while(Math.abs(Math.abs(current_angle) - Math.abs(target_angle)) > 5 && !opmode.isStopRequested()){
+            right_FrontM.setPower(right_power);
+            right_BackM.setPower(right_power);
+            left_FrontM.setPower(left_power);
+            left_BackM.setPower(left_power);
+        }
+
+    }
+
+
+    public void setUpIMU(){
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        // initializes the IMU
+        imu = opmode.hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+    }
 }
