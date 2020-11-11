@@ -11,6 +11,10 @@ public class AutoTest extends LinearOpMode {
         waitForStart();
 
         robot_drive.move(12, 0.5);
+        robot_drive.move(-12, 0.5);
+        //robot_drive.turn_relative_robot(90, 0.5);
+        //robot_drive.turn_relative_robot(-90, 0.5);
+
         //robot_drive.move_using_tics(1120, 0.5);
         //robot_drive.right_FrontM.setPower(0.75);
         //sleep(1000);

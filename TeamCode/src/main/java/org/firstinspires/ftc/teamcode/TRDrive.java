@@ -98,18 +98,35 @@ public class TRDrive {
         /*(Math.abs(right_BackM.getCurrentPosition())-Math.abs(right_target) > 45) &&
                 (Math.abs(left_BackM.getCurrentPosition())-Math.abs(left_target) > 45) &&
                     !opmode.isStopRequested()*/
-        while(Math.abs(right_BackM.getCurrentPosition()) < Math.abs(right_target) &&
-                Math.abs(left_BackM.getCurrentPosition()) < Math.abs(left_target) && !opmode.isStopRequested()){
-            right_FrontM.setPower(power);
-            right_BackM.setPower(power);
-            left_FrontM.setPower(power);
-            left_BackM.setPower(power);
+        if(dist > 0){
+            while(Math.abs(right_BackM.getCurrentPosition()) < Math.abs(right_target) &&
+                    !opmode.isStopRequested()){
+                right_FrontM.setPower(power);
+                right_BackM.setPower(power);
+                left_FrontM.setPower(power);
+                left_BackM.setPower(power);
 
-            opmode.telemetry.addData("tics", tics);
-            opmode.telemetry.addData("Current Position", Math.abs(right_BackM.getCurrentPosition()));
-            opmode.telemetry.addData("Distance to go", Math.abs(Math.abs(right_BackM.getCurrentPosition()) - Math.abs(right_target)));
-            opmode.telemetry.update();
+                opmode.telemetry.addData("tics", tics);
+                opmode.telemetry.addData("Current Position", Math.abs(right_BackM.getCurrentPosition()));
+                opmode.telemetry.addData("Distance to go", Math.abs(Math.abs(right_BackM.getCurrentPosition()) - Math.abs(right_target)));
+                opmode.telemetry.update();
+            }
         }
+        else{
+            while(Math.abs(right_BackM.getCurrentPosition()) >  Math.abs(right_target) &&
+                    !opmode.isStopRequested()){
+                right_FrontM.setPower(-power);
+                right_BackM.setPower(-power);
+                left_FrontM.setPower(-power);
+                left_BackM.setPower(-power);
+
+                opmode.telemetry.addData("tics", tics);
+                opmode.telemetry.addData("Current Position", Math.abs(right_BackM.getCurrentPosition()));
+                opmode.telemetry.addData("Distance to go", Math.abs(Math.abs(right_BackM.getCurrentPosition()) - Math.abs(right_target)));
+                opmode.telemetry.update();
+            }
+        }
+
         go(0.0, 0.0);
     }
 
@@ -187,7 +204,7 @@ public class TRDrive {
             left_FrontM.setPower(left_power);
             left_BackM.setPower(left_power);
         }
-
+        go(0.0,0.0);
     }
 
     public void go(double rpower, double lpower){
