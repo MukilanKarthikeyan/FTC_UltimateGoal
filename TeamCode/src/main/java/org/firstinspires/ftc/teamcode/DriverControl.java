@@ -126,8 +126,8 @@ public class DriverControl extends LinearOpMode {
             if(pad2DualStickDrive){ turn += gamepad2.right_stick_x; }
             else{ turn += gamepad2.left_stick_x; }
 
-            leftPow = drive + turn;
-            rightPow = drive - turn;
+            leftPow = drive - turn;
+            rightPow = drive + turn;
 
             rightFront.setPower(rightPow);
             rightBack.setPower(rightPow);
