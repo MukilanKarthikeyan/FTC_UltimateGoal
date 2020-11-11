@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@TeleOp
 public class PrototypingClamp extends LinearOpMode {
 
     double up;
@@ -29,7 +31,6 @@ public class PrototypingClamp extends LinearOpMode {
         //double motor = 0.0;
         //double clamping = 0.0;
 
-        waitForStart();
 
         while (!isStopRequested()) {
 
