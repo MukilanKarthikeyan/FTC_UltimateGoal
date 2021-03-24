@@ -94,10 +94,42 @@ public class TRDrive {
         int right_target = Math.abs(right_BackM.getCurrentPosition()) + tics;
         int left_target = Math.abs(left_BackM.getCurrentPosition()) + tics;
 
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double current_angle = angles.firstAngle;
+
 
         /*(Math.abs(right_BackM.getCurrentPosition())-Math.abs(right_target) > 45) &&
                 (Math.abs(left_BackM.getCurrentPosition())-Math.abs(left_target) > 45) &&
                     !opmode.isStopRequested()*/
+        if(dist > 0){
+            right_power = power;
+            left_power = power;
+        }
+        else{
+            right_power = -power;
+            left_power = -power;
+        }
+        while((Math.abs(Math.abs(right_BackM.getCurrentPosition())-Math.abs(right_target)) > 10) &&
+                (Math.abs(Math.abs(left_BackM.getCurrentPosition())-Math.abs(left_target)) > 10) &&
+                !opmode.isStopRequested()){
+            right_FrontM.setPower(right_power);
+            right_BackM.setPower(right_power);
+            left_FrontM.setPower(left_power);
+            left_BackM.setPower(left_power);
+
+            //must add acceleration nd deceleration
+            double rp = right_power *(Math.abs(Math.abs(right_BackM.getCurrentPosition())-Math.abs(right_target))/tics);
+            double lp = right_power *(Math.abs(Math.abs(left_BackM.getCurrentPosition())-Math.abs(left_target))/tics);
+
+            opmode.telemetry.addData("angle", current_angle);
+            opmode.telemetry.addData("tics", tics);
+            opmode.telemetry.addData("rp", rp);
+            opmode.telemetry.addData("lp", lp);
+            opmode.telemetry.addData("Current Position", Math.abs(right_BackM.getCurrentPosition()));
+            opmode.telemetry.addData("Distance to go", Math.abs(Math.abs(right_BackM.getCurrentPosition()) - Math.abs(right_target)));
+            opmode.telemetry.update();
+        }
+        /*
         if(dist > 0){
             while(Math.abs(right_BackM.getCurrentPosition()) < Math.abs(right_target) &&
                     !opmode.isStopRequested()){
@@ -125,8 +157,8 @@ public class TRDrive {
                 opmode.telemetry.addData("Distance to go", Math.abs(Math.abs(right_BackM.getCurrentPosition()) - Math.abs(right_target)));
                 opmode.telemetry.update();
             }
-        }
 
+        }*/
         go(0.0, 0.0);
     }
 
@@ -157,29 +189,49 @@ public class TRDrive {
 
         //adds the turning degrees to the robot angle so that the turn starts form where the robot is facing
         double target_angle = current_angle + turn_angle;
+        double error;
 
 
-        boolean clockwise = true;
-        if(turn_angle > 0){
-            right_power = power;
-            left_power = -power;
-            clockwise = true;
-        }
-        else{
-            right_power = -power;
-            left_power = power;
-            clockwise = false;
-        }
+        double pow;
+        double c;
 
-        while(Math.abs(target_angle) - Math.abs(current_angle) > 5 && !opmode.isStopRequested()){
-            right_FrontM.setPower(right_power);
-            right_BackM.setPower(right_power);
-            left_FrontM.setPower(left_power);
-            left_BackM.setPower(left_power);
+
+        while(Math.abs(target_angle) - Math.abs(current_angle) > 10 && !opmode.isStopRequested()){
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            current_angle = angles.firstAngle;
+
+
+            error = target_angle - current_angle;
+            //c = 1+(1/error);
+            pow = power*Math.pow(Math.E,
+                    (
+                            (-1/(2*turn_angle)) * Math.pow(turn_angle-current_angle , 2.0)
+                    )
+            );
+
+
+            if(target_angle>0){
+                right_FrontM.setPower(pow);
+                right_BackM.setPower(pow);
+                left_FrontM.setPower(-pow);
+                left_BackM.setPower(-pow);
+
+            }
+            else{
+                right_FrontM.setPower(-pow);
+                right_BackM.setPower(-pow);
+                left_FrontM.setPower(pow);
+                left_BackM.setPower(pow);
+
+            }
+            opmode.telemetry.addData("Cangle", current_angle);
+            opmode.telemetry.addData("Tangle", turn_angle);
+            opmode.telemetry.addData("Gangle", target_angle);
+            opmode.telemetry.addData("error", error);
+            opmode.telemetry.addData("pow", pow);
+            opmode.telemetry.update();
         }
         go(0.0 , 0.0);
-
-
     }
 
     public void turn_relative_field(double target_angle, double power){
@@ -227,5 +279,7 @@ public class TRDrive {
         imu = opmode.hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+
     }
 }
