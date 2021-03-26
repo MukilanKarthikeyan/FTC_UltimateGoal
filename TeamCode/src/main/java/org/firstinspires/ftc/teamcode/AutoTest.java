@@ -13,11 +13,11 @@ public class AutoTest extends LinearOpMode {
             robot_drive.setUpIMU();
             sleep(100);
 
-           // robot_drive.move(24, 0.75);
+            robot_drive.move(72, 0.75);
             //sleep (500);
             //robot_drive.move(-24, 0.75);
 
-            robot_drive.turn_relative_robot(90, 1);
+            //robot_drive.turn_relative_robot(90, 1);
         //robot_drive.turn_relative_robot(90, 0.5);
         //robot_drive.turn_relative_robot(-90, 0.5);
 

@@ -115,7 +115,6 @@ public class DriverControlV2 extends LinearOpMode {
             if(gamepad1.a && !shootToggle && !gamepad1.start){
                 if(cycling){
                     flyWheel.setPower(0.0);
-                    intake.setPower(0.0);
 
                     transfer1.setPosition(0.6);
                     transfer2.setPosition(0.4);
@@ -123,7 +122,6 @@ public class DriverControlV2 extends LinearOpMode {
                 }
                 else{
                     flyWheel.setPower(0.8);
-                    intake.setPower(0.8);
                     transfer1.setPosition(0.5);
                     transfer2.setPosition(0.5);
                     cycling = true;
