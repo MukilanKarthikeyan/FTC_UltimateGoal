@@ -130,6 +130,8 @@ public class DriverControlV2 extends LinearOpMode {
             }
             else if(!gamepad1.a){shootToggle = false;}
 
+            if(gamepad1.b){intake.setPower(0.7);}else{intake.setPower(0.0);}
+
             //toggle for grabbing and relesing the wobble goal
             if(gamepad1.x && grabToggle ){
                 if(wobbleOpen){
@@ -147,8 +149,8 @@ public class DriverControlV2 extends LinearOpMode {
             // toggle for the transfer mechanism changing between the rings form ramp to shooter
             if(gamepad1.y && !transferToggle){
                 if(transitDown){
-                    transfer1.setPosition(0.65);
-                    transfer2.setPosition(0.45);
+                    transfer1.setPosition(0.3);
+                    transfer2.setPosition(0.3);
                     transitDown = false;
                 }
                 else {
@@ -161,11 +163,18 @@ public class DriverControlV2 extends LinearOpMode {
             }
             else if(!gamepad1.y){transferToggle = false;}
 
+            if(gamepad1.dpad_down){wobbleLift.setPower(0.3);}
+            else if(gamepad1.dpad_left){wobbleLift.setPower(0.5);}
+            else if(gamepad1.dpad_up){wobbleLift.setPower(-0.3);}
+            else if(gamepad1.dpad_right){wobbleLift.setPower(-0.7);}
+            else{wobbleLift.setPower(0.0);}
+
+
             //toogle for dual stick and right stick drive in game pad 1
             //NOTE: add one for right stick drive
             if(gamepad1.left_stick_button && pad1DriveToggle ){
                 if(pad1DualStickDrive){ pad1DualStickDrive = false; }
-                else{ pad1DualStickDrive = true; }
+                else{ pad1DualStickDrive = true;}
                 pad1DriveToggle = false;
             }
             else if(!gamepad1.left_stick_button){pad1DriveToggle = true;}

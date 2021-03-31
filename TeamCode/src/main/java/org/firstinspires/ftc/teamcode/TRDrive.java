@@ -37,7 +37,7 @@ public class TRDrive {
     double wheel_radius = 2;
     double wheel_circumfrence = 2*Math.PI*wheel_radius;
     private final int TICKS_PER_MOTOR_REV = 1120;
-    private final int motor_to_wheel_ratio = 1;
+    private final  double motor_to_wheel_ratio = 2.0/3.0;
     private final int TICKS_PER_WHEEL_REV = (int)(TICKS_PER_MOTOR_REV*motor_to_wheel_ratio);
 
 
@@ -109,8 +109,8 @@ public class TRDrive {
             right_power = -power;
             left_power = -power;
         }
-        while((Math.abs(Math.abs(right_BackM.getCurrentPosition())-Math.abs(right_target)) > 10) &&
-                (Math.abs(Math.abs(left_BackM.getCurrentPosition())-Math.abs(left_target)) > 10) &&
+        while((Math.abs(Math.abs(right_BackM.getCurrentPosition())-Math.abs(right_target)) > 5) &&
+                (Math.abs(Math.abs(left_BackM.getCurrentPosition())-Math.abs(left_target)) > 5) &&
                 !opmode.isStopRequested()){
             right_FrontM.setPower(right_power);
             right_BackM.setPower(right_power);
@@ -118,13 +118,13 @@ public class TRDrive {
             left_BackM.setPower(left_power);
 
             //must add acceleration nd deceleration
-            double rp = right_power *(Math.abs(Math.abs(right_BackM.getCurrentPosition())-Math.abs(right_target))/tics);
-            double lp = right_power *(Math.abs(Math.abs(left_BackM.getCurrentPosition())-Math.abs(left_target))/tics);
-
+            //double rp = right_power *(Math.abs(Math.abs(right_BackM.getCurrentPosition())-Math.abs(right_target))/tics);
+            //double lp = right_power *(Math.abs(Math.abs(left_BackM.getCurrentPosition())-Math.abs(left_target))/tics);
+            opmode.telemetry.addData("tics", tics);
             opmode.telemetry.addData("angle", current_angle);
             opmode.telemetry.addData("tics", tics);
-            opmode.telemetry.addData("rp", rp);
-            opmode.telemetry.addData("lp", lp);
+            //opmode.telemetry.addData("rp", rp);
+            //opmode.telemetry.addData("lp", lp);
             opmode.telemetry.addData("Current Position", Math.abs(right_BackM.getCurrentPosition()));
             opmode.telemetry.addData("Distance to go", Math.abs(Math.abs(right_BackM.getCurrentPosition()) - Math.abs(right_target)));
             opmode.telemetry.update();
