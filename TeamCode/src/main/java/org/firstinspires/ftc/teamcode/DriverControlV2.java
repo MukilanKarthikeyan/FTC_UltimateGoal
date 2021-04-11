@@ -3,6 +3,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
@@ -18,6 +19,7 @@ public class DriverControlV2 extends LinearOpMode {
     Servo transfer1;
     Servo transfer2;
     Servo wobbleGrab;
+    Servo bucket;
     CRServo moveToShoot1;
     CRServo moveToShoot2;
 
@@ -42,6 +44,7 @@ public class DriverControlV2 extends LinearOpMode {
         transfer1 = hardwareMap.get(Servo.class, "t1");
         transfer2 = hardwareMap.get(Servo.class, "t2");
         wobbleGrab = hardwareMap.get(Servo.class, "wg");
+        bucket = hardwareMap.get(Servo.class, "bk");
 
 
         //reverse the direction of the motors neeeded so positive is the same dirction for all
