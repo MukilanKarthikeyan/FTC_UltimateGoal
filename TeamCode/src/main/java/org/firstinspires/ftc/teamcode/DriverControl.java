@@ -45,7 +45,7 @@ public class DriverControl extends LinearOpMode {
 
         transfer1 = hardwareMap.get(Servo.class, "t1");
         transfer2 = hardwareMap.get(Servo.class, "t2");
-        wobbleGrab = hardwareMap.get(Servo.class, "w");
+        wobbleGrab = hardwareMap.get(Servo.class, "wg");
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);

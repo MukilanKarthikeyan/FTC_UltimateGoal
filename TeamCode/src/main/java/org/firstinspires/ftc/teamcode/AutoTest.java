@@ -23,23 +23,27 @@ public class AutoTest extends LinearOpMode {
             transfer1 = hardwareMap.get(Servo.class, "t1");
             bucket = hardwareMap.get(Servo.class, "bk");
 
-            transfer2.setPosition(0.0);
-            transfer1.setPosition(0.35);
+            transfer2.setPosition(0.35);
+            transfer1.setPosition(0.6);
             bucket.setPosition(0.75);
 
             waitForStart();
-
-            //flyWheel.setPower(0.7);
-            transfer1.setPosition(0.75);
+            flyWheel.setPower(0.7);
             sleep(2000);
             transfer2.setPosition(0.63);
             sleep(4000);
-
-            flyWheel.setPower(0.3);
+            //ring 1 shot
+            flyWheel.setPower(0.0);
+            transfer2.setPosition(0.0);
+            sleep(1000);
+            flyWheel.setPower(0.7);
+            sleep(1000);
+            transfer1.setPosition(0.2);
+            sleep(1000);
+            transfer2.setPosition(0.63);
 
             while (opModeIsActive()){
                 //flyWheel.setPower(0.8);
-
             }
 
     }
