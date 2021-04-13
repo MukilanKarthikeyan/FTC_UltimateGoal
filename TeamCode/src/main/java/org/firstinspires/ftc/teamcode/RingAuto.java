@@ -57,10 +57,14 @@ public class RingAuto extends LinearOpMode{
 
         for(int i = 0; i<3; i++){
             storageArm.setPosition(1.0);
+            sleep(500);
             moveToShoot.setPosition(1.0);
+            sleep(500);
 
             moveToShoot.setPosition(0.05);
+            sleep(500);
             storageArm.setPosition(0.8);
+            sleep(500);
         }
 
 
