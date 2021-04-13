@@ -18,36 +18,40 @@ public class DriverControlV2 extends LinearOpMode {
     Servo transfer1;
     Servo transfer2;
     Servo wobbleGrab;
-    CRServo moveToShoot1;
-    CRServo moveToShoot2;
+    Servo moveToShoot;
+    Servo storageArm;
 
-    boolean shootToggle, grabToggle, transferToggle; //one button two actions -> a monostable circuit
-    boolean transitDown, wobbleOpen, cycling;
+    boolean shootToggle, grabToggle, transferToggle, moveToggle, storageToggle; //one button two actions -> a monostable circuit
+    boolean transitDown, wobbleOpen, cycling, fedLaunch, ringPushed;
     boolean pad1DriveToggle, pad1DualStickDrive; //monostable circuit for switching between dual stick drive and right stick drive
     boolean pad2DriveToggle, pad2DualStickDrive;//same as above but for pad 2
-    double transPosUp, transPosDown; //transfer mechanism servos
+    double transPosUp, transPosDown;           //transfer mechanism servos
 
     public void runOpMode() {
 
         //initialize all the declared hardware
-        flyWheel = hardwareMap.get(DcMotor.class, "fw");
-        intake = hardwareMap.get(DcMotor.class, "in");
-        wobbleLift = hardwareMap.get(DcMotor.class, "wl");
 
-        rightFront = hardwareMap.get(DcMotor.class, "rf");
-        rightBack = hardwareMap.get(DcMotor.class, "rb");
-        leftFront = hardwareMap.get(DcMotor.class, "lf");
-        leftBack = hardwareMap.get(DcMotor.class, "lb");
+        intake = hardwareMap.get(DcMotor.class, "in"); // expansion motor port 0
+        flyWheel = hardwareMap.get(DcMotor.class, "fw"); // expansion motor port 2
+        wobbleLift = hardwareMap.get(DcMotor.class, "wl"); // expansion motor port 3
 
-        transfer1 = hardwareMap.get(Servo.class, "t1");
-        transfer2 = hardwareMap.get(Servo.class, "t2");
-        wobbleGrab = hardwareMap.get(Servo.class, "wg");
+        rightFront = hardwareMap.get(DcMotor.class, "rf"); // control motor port 0
+        rightBack = hardwareMap.get(DcMotor.class, "rb"); // control motor port 1
+        leftFront = hardwareMap.get(DcMotor.class, "lf");// control motor port 2
+        leftBack = hardwareMap.get(DcMotor.class, "lb");// control motor port 3
+
+        moveToShoot = hardwareMap.get(Servo.class, "ms"); // servo port 0
+        transfer1 = hardwareMap.get(Servo.class, "t1");  //servo port 1
+        transfer2 = hardwareMap.get(Servo.class, "t2"); // servo port 2
+        storageArm = hardwareMap.get(Servo.class, "sa"); // servo port 3
+        wobbleGrab = hardwareMap.get(Servo.class, "wg");// servo port 5
+
 
 
         //reverse the direction of the motors neeeded so positive is the same dirction for all
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
-        flyWheel.setDirection(DcMotor.Direction.REVERSE);
+        //flyWheel.setDirection(DcMotor.Direction.REVERSE);
 
 
         //establish 0 power behavior for all motors
@@ -89,6 +93,8 @@ public class DriverControlV2 extends LinearOpMode {
         shootToggle = false;
         grabToggle = true;
         transferToggle = false;
+        moveToggle = false;
+        storageToggle = false;
         pad1DriveToggle = false;
         pad2DriveToggle = false;
 
@@ -96,6 +102,8 @@ public class DriverControlV2 extends LinearOpMode {
         cycling = false;
         wobbleOpen = true;
         transitDown = true;
+        fedLaunch = true;
+        ringPushed = true;
         pad1DualStickDrive = true;
         pad2DualStickDrive = true;
 
@@ -105,6 +113,8 @@ public class DriverControlV2 extends LinearOpMode {
         transfer1.setPosition(0.5);
         transfer2.setPosition(0.5);
         wobbleGrab.setPosition(0.5);
+        moveToShoot.setPosition(1.0);
+        storageArm.setPosition(1.0);
 
         //the code that runs in loop during the driver control period
         while(!isStopRequested()){
@@ -116,14 +126,14 @@ public class DriverControlV2 extends LinearOpMode {
                 if(cycling){
                     flyWheel.setPower(0.0);
 
-                    transfer1.setPosition(0.6);
-                    transfer2.setPosition(0.4);
+                    //transfer1.setPosition(0.6);
+                    //transfer2.setPosition(0.4);
                     cycling = false;
                 }
                 else{
-                    flyWheel.setPower(0.8);
-                    transfer1.setPosition(0.5);
-                    transfer2.setPosition(0.5);
+                    flyWheel.setPower(-0.8);
+                    //transfer1.setPosition(0.5);
+                    //transfer2.setPosition(0.5);
                     cycling = true;
                 }
                 shootToggle = true;
@@ -132,8 +142,54 @@ public class DriverControlV2 extends LinearOpMode {
 
             if(gamepad1.b){intake.setPower(0.7);}else{intake.setPower(0.0);}
 
+            // toggle for the transfer mechanism changing between the rings form ramp to shooter
+            if(gamepad1.y && !transferToggle){
+                if(transitDown){
+                    transfer1.setPosition(0.8);
+                    transfer2.setPosition(0.2);
+                    transitDown = false;
+                }
+                else {
+                    transfer1.setPosition(1.0);
+                    transfer2.setPosition(0.0);
+                    transitDown = true;
+
+                }
+                transferToggle = true;
+            }
+            else if(!gamepad1.y){transferToggle = false;}
+
+            //storage arm
+            if(gamepad1.x && !storageToggle){
+                if(ringPushed){
+                    moveToShoot.setPosition(0.05);
+                    fedLaunch = false;
+                    storageArm.setPosition(1.0);
+                    ringPushed = false;
+                }
+                else {
+                    storageArm.setPosition(0.8);
+                    ringPushed = true;
+                }
+                storageToggle = true;
+            }
+            else if(!gamepad1.x){storageToggle = false;}
+
+            if(gamepad1.right_bumper && !moveToggle){
+                if(fedLaunch){
+                    moveToShoot.setPosition(0.05);
+                    fedLaunch = false;
+                }
+                else {
+                    moveToShoot.setPosition(1.0);
+                    fedLaunch = true;
+                }
+                moveToggle = true;
+            }
+            else if(!gamepad1.right_bumper){moveToggle = false;}
+
             //toggle for grabbing and relesing the wobble goal
-            if(gamepad1.x && grabToggle ){
+            if(gamepad1.left_bumper && grabToggle ){
                 if(wobbleOpen){
                     wobbleGrab.setPosition(0.7);
                     wobbleOpen = false;
@@ -144,24 +200,7 @@ public class DriverControlV2 extends LinearOpMode {
                 }
                 grabToggle = false;
             }
-            else if(!gamepad1.x){grabToggle = true;}
-
-            // toggle for the transfer mechanism changing between the rings form ramp to shooter
-            if(gamepad1.y && !transferToggle){
-                if(transitDown){
-                    transfer1.setPosition(0.3);
-                    transfer2.setPosition(0.3);
-                    transitDown = false;
-                }
-                else {
-                    transfer1.setPosition(0.5);
-                    transfer2.setPosition(0.5);
-                    transitDown = true;
-
-                }
-                transferToggle = true;
-            }
-            else if(!gamepad1.y){transferToggle = false;}
+            else if(!gamepad1.left_bumper){grabToggle = true;}
 
             if(gamepad1.dpad_down){wobbleLift.setPower(0.3);}
             else if(gamepad1.dpad_left){wobbleLift.setPower(0.5);}
