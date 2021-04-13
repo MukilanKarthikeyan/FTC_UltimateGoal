@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.util.Range;
 
 @TeleOp
 public class DriverControlV2 extends LinearOpMode {
-    double conPow;
     double leftPow, rightPow; //using the tilerunner, so only two sides are distinguished in powering
     double drive, turn;
 
@@ -131,7 +130,7 @@ public class DriverControlV2 extends LinearOpMode {
                     cycling = false;
                 }
                 else{
-                    flyWheel.setPower(-0.8);
+                    flyWheel.setPower(0.8);
                     //transfer1.setPosition(0.5);
                     //transfer2.setPosition(0.5);
                     cycling = true;
@@ -191,11 +190,11 @@ public class DriverControlV2 extends LinearOpMode {
             //toggle for grabbing and relesing the wobble goal
             if(gamepad1.left_bumper && grabToggle ){
                 if(wobbleOpen){
-                    wobbleGrab.setPosition(0.7);
+                    wobbleGrab.setPosition(0.5);
                     wobbleOpen = false;
                 }
                 else{
-                    wobbleGrab.setPosition(0.5);
+                    wobbleGrab.setPosition(0.0);
                     wobbleOpen = true;
                 }
                 grabToggle = false;
