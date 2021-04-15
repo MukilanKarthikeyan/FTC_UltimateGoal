@@ -167,7 +167,7 @@ public class DriverControlV2 extends LinearOpMode {
                     ringPushed = false;
                 }
                 else {
-                    storageArm.setPosition(0.8);
+                    storageArm.setPosition(0.5);
                     ringPushed = true;
                 }
                 storageToggle = true;
@@ -201,9 +201,9 @@ public class DriverControlV2 extends LinearOpMode {
             }
             else if(!gamepad1.left_bumper){grabToggle = true;}
 
-            if(gamepad1.dpad_down){wobbleLift.setPower(0.3);}
+            if(gamepad1.dpad_down){wobbleLift.setPower(0.25);}
             else if(gamepad1.dpad_left){wobbleLift.setPower(0.5);}
-            else if(gamepad1.dpad_up){wobbleLift.setPower(-0.3);}
+            else if(gamepad1.dpad_up){wobbleLift.setPower(-0.25);}
             else if(gamepad1.dpad_right){wobbleLift.setPower(-0.7);}
             else{wobbleLift.setPower(0.0);}
 

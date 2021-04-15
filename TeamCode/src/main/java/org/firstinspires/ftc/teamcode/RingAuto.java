@@ -46,25 +46,25 @@ public class RingAuto extends LinearOpMode{
         //currently not using it but helps to set and maintain the speed
         flyWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        robot_drive.move(12, 0.75);
+        //robot_drive.move(12, 0.75);
 
-        moveToShoot.setPosition(0.05);
+        moveToShoot.setPosition(0.0);
         storageArm.setPosition(0.8);
-        flyWheel.setPower(0.8);
+        //flyWheel.setPower(0.8);
 
-        transfer1.setPosition(0.8);
-        transfer2.setPosition(0.2);
+        transfer1.setPosition(0.6);
+        transfer2.setPosition(0.4);
 
-        for(int i = 0; i<3; i++){
-            storageArm.setPosition(1.0);
-            sleep(500);
-            moveToShoot.setPosition(1.0);
-            sleep(500);
-
-            moveToShoot.setPosition(0.05);
-            sleep(500);
+        for(int i = 0; i < 3; i++){
             storageArm.setPosition(0.8);
-            sleep(500);
+            sleep(700);
+            //moveToShoot.setPosition(0.7);
+            sleep(700);
+
+            //moveToShoot.setPosition(0.0);
+            //sleep(700);
+            //storageArm.setPosition(0.0);
+            //sleep(700);
         }
 
 
