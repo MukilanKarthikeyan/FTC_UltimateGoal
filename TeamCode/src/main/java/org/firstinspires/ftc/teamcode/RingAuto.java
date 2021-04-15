@@ -48,23 +48,24 @@ public class RingAuto extends LinearOpMode{
 
         //robot_drive.move(12, 0.75);
 
-        moveToShoot.setPosition(0.0);
-        storageArm.setPosition(0.8);
-        //flyWheel.setPower(0.8);
+        moveToShoot.setPosition(0.05);
+        storageArm.setPosition(0.75);
+        flyWheel.setPower(0.8);
 
         transfer1.setPosition(0.6);
         transfer2.setPosition(0.4);
+        sleep(500);
 
         for(int i = 0; i < 3; i++){
-            storageArm.setPosition(0.8);
+            storageArm.setPosition(0.4);
             sleep(700);
-            //moveToShoot.setPosition(0.7);
+            moveToShoot.setPosition(0.7);
             sleep(700);
 
-            //moveToShoot.setPosition(0.0);
-            //sleep(700);
-            //storageArm.setPosition(0.0);
-            //sleep(700);
+            storageArm.setPosition(0.75);
+            sleep(700);
+            moveToShoot.setPosition(0.05);
+            sleep(700);
         }
 
 
